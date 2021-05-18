@@ -5,17 +5,23 @@ A gnome extension to enable Mumble push to talk.
 
 # Usage
 
-Maintain both `<shift>` then `<window>` keys pressed to trigger push to talk.
+Push the top menu face icon to talk. Or toggle mute with the `<Super>F2` shortcut.
 
 # Install
 
-Copy the `mumble-push-to-talk@tristancacqueray.github.io` directory to your `~/.local/share/gnome-shell/extensions/`
+Copy the `mumble-push-to-talk@tristancacqueray.github.io` directory to your `~/.local/share/gnome-shell/extensions/`.
 
-Then run `gnome-extensions enable mumble-push-to-talk@tristancacqueray.github.io`
+Restart gnome-shell session if needed.
+
+Then run `gnome-extensions enable mumble-push-to-talk@tristancacqueray.github.io`.
 
 # Contribute
 
-Contributions are most welcome.
+Contributions are most welcome:
+
+- A setting widget to change the shortcut.
+- Figure out keyboard push to talk, see: https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/2838
+- Hide the top menu icon when mumble is not running.
 
 To modify the extension, you will need a [PureScript][purescript] toolchain and the gnome developper tool.
 
