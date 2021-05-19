@@ -2,6 +2,9 @@ DIST := "gnome-mumble-push-to-talk@tristancacqueray.github.io"
 
 all: dist
 
+test-dbus:
+	spago bundle-app -m MumbleDBus --to build/test-dbus.js --then "gjs build/test-dbus.js"
+
 .PHONY: install
 install:
 	mkdir -p ~/.local/share/gnome-shell/extensions/
