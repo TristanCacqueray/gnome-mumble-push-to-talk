@@ -20,8 +20,8 @@ dist: dist-meta dist-extension
 .PHONY: dist-meta
 dist-meta:
 	mkdir -p $(DIST)/schemas
-	dhall-to-json --file ./src/metadata.dhall --output $(DIST)/metadata.json
-	dhall text --file ./src/gnome-mumble-push-to-talk.gschema.dhall --output $(DIST)/schemas/autochill.gschema.xml
+	echo "(./extension.dhall).metadata" | dhall-to-json --output $(DIST)/metadata.json
+	echo "(./extension.dhall).schema" | dhall text --output $(DIST)/schemas/autochill.gschema.xml
 	glib-compile-schemas $(DIST)/schemas/
 
 .PHONY: dist-extension

@@ -1,3 +1,4 @@
+-- | The gnome-mumble-push-to-talk extension entry point
 module GnomeMumblePushToTalk where
 
 import Prelude
@@ -34,11 +35,9 @@ type EnvRef
 log :: String -> Effect Unit
 log msg = GJS.log $ "gnome-mumble-push-to-talk: " <> msg
 
+-- | Create the empty env ref for init/enable/disable
 create :: Effect EnvRef
 create = Ref.new Nothing
-
-init :: EnvRef -> Effect Unit
-init env = pure unit
 
 -- | Enable the extension
 enable :: EnvRef -> Effect Unit
@@ -46,22 +45,9 @@ enable envRef = do
   log "enable called"
   env <- createEnv
   Ref.write (Just env) envRef
-  -- Setup top menu
-  Actor.add_child env.button env.icon
-  Panel.addToStatusArea "mumble" env.button
-  void $ Actor.onButtonPressEvent env.button (onClick onTalkStart env)
-  void $ Actor.onButtonReleaseEvent env.button (onClick onTalkEnd env)
-  -- Setup shortcut
-  stateRef <- Ref.new false
-  void $ WM.addKeybinding "toggle-mumble" env.settings KeyBindingFlags.ignore_autorepeat ActionMode.all (onKeyBinding env stateRef)
+  enableTopMenu env
+  enableShortCut env
   where
-  getSettings = do
-    me <- ExtensionUtils.getCurrentExtension
-    path <- ExtensionUtils.getPath me "schemas"
-    schemaSource <- SettingsSchemaSource.new_from_directory path false
-    schema <- SettingsSchemaSource.lookup schemaSource "org.gnome.shell.extensions.gnome-mumble-push-to-talk" false
-    Settings.new_full schema
-
   createEnv = do
     button <- PanelMenu.newButton 0.0 "Mumble" false
     muteIcon <- ThemedIcon.new "face-shutmouth-symbolic"
@@ -71,6 +57,29 @@ enable envRef = do
     St.add_style_class_name icon "system-status-icon"
     St.Icon.set_gicon icon muteIcon
     pure { settings, button, icon, muteIcon, talkIcon }
+
+  enableTopMenu env = do
+    Actor.add_child env.button env.icon
+    Panel.addToStatusArea "mumble" env.button
+    void $ Actor.onButtonPressEvent env.button (onClick onTalkStart env)
+    void $ Actor.onButtonReleaseEvent env.button (onClick onTalkEnd env)
+
+  enableShortCut env = do
+    stateRef <- Ref.new false
+    void
+      $ WM.addKeybinding
+          "toggle-mumble"
+          env.settings
+          KeyBindingFlags.ignore_autorepeat
+          ActionMode.all
+          (onKeyBinding env stateRef)
+
+  getSettings = do
+    me <- ExtensionUtils.getCurrentExtension
+    path <- ExtensionUtils.getPath me "schemas"
+    schemaSource <- SettingsSchemaSource.new_from_directory path false
+    schema <- SettingsSchemaSource.lookup schemaSource "org.gnome.shell.extensions.gnome-mumble-push-to-talk" false
+    Settings.new_full schema
 
   onKeyBinding env stateRef = do
     state <- Ref.read stateRef
@@ -99,13 +108,22 @@ enable envRef = do
 disable :: EnvRef -> Effect Unit
 disable envRef = do
   log "disable called"
-  envM <- Ref.read envRef
-  -- remove top menu
-  case envM of
-    Just env -> Actor.destroy env.button
-    Nothing -> log "Oops, no env"
-  -- remove key event handlers
-  WM.removeKeybinding "toggle-mumble"
+  disableTopMenu
+  disableShortCut
+  where
+  disableTopMenu = do
+    envM <- Ref.read envRef
+    case envM of
+      Just env -> Actor.destroy env.button
+      Nothing -> log "Oops, no env"
 
+  disableShortCut = do
+    WM.removeKeybinding "toggle-mumble"
+
+-- | No main needed
 main :: Effect Unit
 main = pure unit
+
+-- | No init needed
+init :: EnvRef -> Effect Unit
+init env = pure unit
