@@ -28,8 +28,6 @@ To modify the extension, you will need a [PureScript][purescript] toolchain and 
 Run the `nix-shell` command to setup.w
 
 ```ShellSession
-# Ensure purescript-gjs is cloned in the parent directory
-git clone https://github.com/purescript-gjs/purescript-gjs ../purescript-gjs
 # Build javascript
 make dist
 

@@ -1,30 +1,37 @@
-DIST := "gnome-mumble-push-to-talk@tristancacqueray.github.io"
+# TODO: replace dependency by a known location
+PGS := "~/src/github.com/purescript-gjs/purescript-gnome-shell/package.dhall"
 
-all: dist
+NAME := $(shell sh -c 'echo "($(PGS)).uid ./extension.dhall" | env PGS=$(PGS) dhall text')
+MAIN := $(shell sh -c 'echo "($(PGS)).main ./extension.dhall" | env PGS=$(PGS) dhall text')
 
-test-dbus:
-	spago bundle-app -m MumbleDBus --to build/test-dbus.js --then "gjs build/test-dbus.js"
+.PHONY: dist
+dist: dist-meta dist-schemas dist-extension
+
+.PHONY: dist-meta
+dist-meta:
+	mkdir -p $(NAME)
+	echo "($(PGS)).metadata ./extension.dhall" | env PGS=$(PGS) dhall-to-json --output $(NAME)/metadata.json
+
+.PHONY: dist-schemas
+dist-schemas:
+	mkdir -p $(NAME)/schemas
+	echo "($(PGS)).renderSchema ./extension.dhall" | env PGS=$(PGS) dhall text --output $(NAME)/schemas/autochill.gschema.xml
+	glib-compile-schemas $(NAME)/schemas/
+
+.PHONY: dist-extension
+dist-extension:
+	env PGS=$(PGS) spago bundle-app -m $(MAIN) --to $(NAME)/extension.js
+	echo "($(PGS)).boot ./extension.dhall" | env PGS=$(PGS) dhall text >> $(NAME)/extension.js
 
 .PHONY: install
 install:
 	mkdir -p ~/.local/share/gnome-shell/extensions/
-	ln -s $(PWD)/$(DIST)/ ~/.local/share/gnome-shell/extensions/$(DIST)
+	ln -s $(PWD)/$(NAME)/ ~/.local/share/gnome-shell/extensions/$(NAME)
 
 .PHONY: test
 test:
 	dbus-run-session -- gnome-shell --nested --wayland
 
-.PHONY: dist
-dist: dist-meta dist-extension
-
-.PHONY: dist-meta
-dist-meta:
-	mkdir -p $(DIST)/schemas
-	echo "(./extension.dhall).metadata" | dhall-to-json --output $(DIST)/metadata.json
-	echo "(./extension.dhall).schema" | dhall text --output $(DIST)/schemas/autochill.gschema.xml
-	glib-compile-schemas $(DIST)/schemas/
-
-.PHONY: dist-extension
-dist-extension:
-	spago bundle-app -m GnomeMumblePushToTalk --to $(DIST)/extension.js
-	cat src/main-extension.js >> $(DIST)/extension.js
+.PHONE: update
+update:
+	echo "($(PGS)).render ./extension.dhall" | env PGS=$(PGS) dhall to-directory-tree --output .

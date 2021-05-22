@@ -1,62 +1,57 @@
 -- | The gnome-mumble-push-to-talk extension entry point
 module GnomeMumblePushToTalk where
 
-import Prelude
+import Clutter.Actor as Actor
 import Effect (Effect)
 import Effect.Ref as Ref
-import Data.Maybe (Maybe(..))
+import ExtensionUtils as ExtensionUtils
 import GJS as GJS
-import Clutter.Actor as Actor
-import ShellUI.PanelMenu as PanelMenu
-import Gio.ThemedIcon as ThemedIcon
 import Gio.Icon (Icon)
+import Gio.Settings as Settings
+import Gio.SettingsSchemaSource as SettingsSchemaSource
+import Gio.ThemedIcon as ThemedIcon
+import Gnome.Extension (Extension)
+import Gnome.Shell.ActionMode as ActionMode
+import Gnome.UI.Main.Panel as Panel
+import Gnome.UI.Main.WM as WM
+import Gnome.UI.PanelMenu as PanelMenu
+import Meta.KeyBindingFlags as KeyBindingFlags
+import MumbleDBus as MumbleDBus
+import Prelude
 import St as St
 import St.Icon as St.Icon
-import ShellUI.Main.Panel as Panel
-import MumbleDBus as MumbleDBus
-import ExtensionUtils as ExtensionUtils
-import Gio.SettingsSchemaSource as SettingsSchemaSource
-import Gio.Settings as Settings
-import ShellUI.Main.WM as WM
-import Meta.KeyBindingFlags as KeyBindingFlags
-import Shell.ActionMode as ActionMode
 
 type Env
   = { button :: PanelMenu.Button
     , icon :: St.Icon.Icon
     , muteIcon :: Icon
     , talkIcon :: Icon
-    , settings :: Settings.Settings
     }
 
-type EnvRef
-  = Ref.Ref (Maybe Env)
+init :: Effect Settings.Settings
+init = do
+  me <- ExtensionUtils.getCurrentExtension
+  path <- ExtensionUtils.getPath me "schemas"
+  schemaSource <- SettingsSchemaSource.new_from_directory path false
+  schema <- SettingsSchemaSource.lookup schemaSource "org.gnome.shell.extensions.gnome-mumble-push-to-talk" false
+  Settings.new_full schema
 
-log :: String -> Effect Unit
-log msg = GJS.log $ "gnome-mumble-push-to-talk: " <> msg
-
--- | Create the empty env ref for init/enable/disable
-create :: Effect EnvRef
-create = Ref.new Nothing
-
--- | Enable the extension
-enable :: EnvRef -> Effect Unit
-enable envRef = do
+enable :: Settings.Settings -> Effect Env
+enable settings = do
   log "enable called"
   env <- createEnv
-  Ref.write (Just env) envRef
   enableTopMenu env
   enableShortCut env
+  pure env
   where
   createEnv = do
     button <- PanelMenu.newButton 0.0 "Mumble" false
     muteIcon <- ThemedIcon.new "face-shutmouth-symbolic"
     talkIcon <- ThemedIcon.new "face-smile-big-symbolic"
     icon <- St.Icon.new
-    settings <- getSettings
     St.add_style_class_name icon "system-status-icon"
     St.Icon.set_gicon icon muteIcon
-    pure { settings, button, icon, muteIcon, talkIcon }
+    pure { button, icon, muteIcon, talkIcon }
 
   enableTopMenu env = do
     Actor.add_child env.button env.icon
@@ -69,17 +64,10 @@ enable envRef = do
     void
       $ WM.addKeybinding
           "toggle-mumble"
-          env.settings
+          settings
           KeyBindingFlags.ignore_autorepeat
           ActionMode.all
           (onKeyBinding env stateRef)
-
-  getSettings = do
-    me <- ExtensionUtils.getCurrentExtension
-    path <- ExtensionUtils.getPath me "schemas"
-    schemaSource <- SettingsSchemaSource.new_from_directory path false
-    schema <- SettingsSchemaSource.lookup schemaSource "org.gnome.shell.extensions.gnome-mumble-push-to-talk" false
-    Settings.new_full schema
 
   onKeyBinding env stateRef = do
     state <- Ref.read stateRef
@@ -104,26 +92,21 @@ enable envRef = do
     St.Icon.set_gicon env.icon env.muteIcon
     MumbleDBus.call MumbleDBus.StopTalking
 
--- | Disable the extension
-disable :: EnvRef -> Effect Unit
-disable envRef = do
+disable :: Env -> Effect Unit
+disable env = do
   log "disable called"
   disableTopMenu
   disableShortCut
   where
-  disableTopMenu = do
-    envM <- Ref.read envRef
-    case envM of
-      Just env -> Actor.destroy env.button
-      Nothing -> log "Oops, no env"
+  disableTopMenu = Actor.destroy env.button
 
-  disableShortCut = do
-    WM.removeKeybinding "toggle-mumble"
+  disableShortCut = WM.removeKeybinding "toggle-mumble"
 
--- | No main needed
+extension :: Extension Settings.Settings Env
+extension = { enable, disable, init }
+
+log :: String -> Effect Unit
+log msg = GJS.log $ "gnome-mumble-push-to-talk: " <> msg
+
 main :: Effect Unit
-main = pure unit
-
--- | No init needed
-init :: EnvRef -> Effect Unit
-init env = pure unit
+main = log "Welcome!"
