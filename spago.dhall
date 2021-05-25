@@ -8,20 +8,25 @@ let gjs =
       { repo = "https://github.com/purescript-gjs/purescript-gjs.git"
       , version = "main"
       , dependencies =
-        [ "arrays"
-        , "console"
+        [ "aff"
+        , "arraybuffer-types"
+        , "arrays"
         , "effect"
+        , "either"
         , "exceptions"
         , "foldable-traversable"
         , "integers"
         , "lists"
         , "maybe"
         , "nullable"
+        , "parallel"
+        , "prelude"
         , "psci-support"
+        , "tuples"
         ]
       }
 
-in  { name = "autochill"
+in  { name = "gnome-mumble-push-to-talk"
     , sources = [ "src/**/*.purs" ]
     , dependencies =
       [ "effect"
