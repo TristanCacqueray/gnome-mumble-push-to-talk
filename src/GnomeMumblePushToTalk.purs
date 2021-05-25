@@ -1,11 +1,17 @@
 -- | The gnome-mumble-push-to-talk extension entry point
 module GnomeMumblePushToTalk where
 
+import Prelude
 import Clutter.Actor as Actor
+import Data.Maybe (Maybe(..))
+import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Ref as Ref
 import ExtensionUtils as ExtensionUtils
 import GJS as GJS
+import GLib as GLib
+import GLib.DateTime as GLib.DateTime
+import GLib.TimeSpan (TimeSpan(..))
 import Gio.Icon (Icon)
 import Gio.Settings as Settings
 import Gio.SettingsSchemaSource as SettingsSchemaSource
@@ -17,7 +23,6 @@ import Gnome.UI.Main.WM as WM
 import Gnome.UI.PanelMenu as PanelMenu
 import Meta.KeyBindingFlags as KeyBindingFlags
 import MumbleDBus as MumbleDBus
-import Prelude
 import St as St
 import St.Icon as St.Icon
 
@@ -60,23 +65,41 @@ enable settings = do
     void $ Actor.onButtonReleaseEvent env.button (onClick onTalkEnd env)
 
   enableShortCut env = do
-    stateRef <- Ref.new false
+    timerRef <- Ref.new Nothing
     void
       $ WM.addKeybinding
           "toggle-mumble"
           settings
-          KeyBindingFlags.ignore_autorepeat
+          KeyBindingFlags.none
           ActionMode.all
-          (onKeyBinding env stateRef)
+          (onKeyBinding env timerRef)
 
-  onKeyBinding env stateRef = do
-    state <- Ref.read stateRef
-    if state then
-      onTalkStart env
-    else
-      onTalkEnd env
-    Ref.write (not state) stateRef
+  onKeyBinding env timerRef = do
+    timerM <- Ref.read timerRef
+    case timerM of
+      Just (Tuple begin timer) -> do
+        now <- GLib.DateTime.new_now_utc
+        let
+          TimeSpan diff = GLib.DateTime.difference now begin
+        when (diff >= 400000)
+          ( do
+              GLib.sourceRemove timer
+              startCanceller now
+          )
+      Nothing -> do
+        onTalkStart env
+        now <- GLib.DateTime.new_now_utc
+        startCanceller now
     pure false
+    where
+    startCanceller now = do
+      timer <- GLib.timeoutAdd 500 releasePushToTalk
+      Ref.write (Just $ Tuple now timer) timerRef
+
+    releasePushToTalk = do
+      onTalkEnd env
+      Ref.write Nothing timerRef
+      pure false
 
   onClick cb env _ _ = do
     cb env

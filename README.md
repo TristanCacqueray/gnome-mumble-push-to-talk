@@ -20,7 +20,6 @@ Then run `gnome-extensions enable mumble-push-to-talk@tristancacqueray.github.io
 Contributions are most welcome:
 
 - A setting widget to change the shortcut.
-- Figure out keyboard push to talk, see: https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/2838
 - Hide the top menu icon when mumble is not running.
 
 To modify the extension, you will need a [PureScript][purescript] toolchain and the gnome developper tool.
