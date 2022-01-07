@@ -9,11 +9,11 @@ Push the top menu face icon to talk. Or toggle mute with the `<Super>F2` shortcu
 
 # Install
 
-Copy the `mumble-push-to-talk@tristancacqueray.github.io` directory to your `~/.local/share/gnome-shell/extensions/`.
+Copy the `gnome-mumble-push-to-talk@tristancacqueray.github.io` directory to your `~/.local/share/gnome-shell/extensions/`.
 
 Restart gnome-shell session if needed.
 
-Then run `gnome-extensions enable mumble-push-to-talk@tristancacqueray.github.io`.
+Then run `gnome-extensions enable gnome-mumble-push-to-talk@tristancacqueray.github.io`.
 
 # Contribute
 
