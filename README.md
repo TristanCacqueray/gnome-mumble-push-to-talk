@@ -24,7 +24,7 @@ Contributions are most welcome:
 
 To modify the extension, you will need a [PureScript][purescript] toolchain and the gnome developper tool.
 
-Run the `nix-shell` command to setup.w
+Run the `nix develop` command to setup.
 
 ```ShellSession
 # Build javascript

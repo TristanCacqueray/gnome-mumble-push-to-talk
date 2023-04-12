@@ -21,7 +21,6 @@ let gjs =
         , "nullable"
         , "parallel"
         , "prelude"
-        , "psci-support"
         , "tuples"
         ]
       }
@@ -29,17 +28,10 @@ let gjs =
 in  { name = "gnome-mumble-push-to-talk"
     , sources = [ "src/**/*.purs" ]
     , dependencies =
-      [ "effect"
-      , "gjs"
-      , "gnome-shell"
-      , "maybe"
-      , "prelude"
-      , "psci-support"
-      , "refs"
-      , "tuples"
-      ]
+      [ "effect", "gjs", "gnome-shell", "maybe", "prelude", "refs", "tuples" ]
     , packages =
-        https://github.com/purescript/package-sets/releases/download/psc-0.14.0-20210402/packages.dhall sha256:0cfaa5de499bd629f5263daff3261144d9d348d38a451b7938a6f52054c3a086
+        https://github.com/purescript/package-sets/releases/download/psc-0.15.7-20230408/packages.dhall
+          sha256:eafb4e5bcbc2de6172e9457f321764567b33bc7279bd6952468d0d422aa33948
       with gnome-shell = gnome-shell
       with gjs = gjs
     }

@@ -33,16 +33,16 @@ type Env
     , talkIcon :: Icon
     }
 
-init :: Effect Settings.Settings
-init = do
+extension_init :: Effect Settings.Settings
+extension_init = do
   me <- ExtensionUtils.getCurrentExtension
   path <- ExtensionUtils.getPath me "schemas"
   schemaSource <- SettingsSchemaSource.new_from_directory path false
   schema <- SettingsSchemaSource.lookup schemaSource "org.gnome.shell.extensions.gnome-mumble-push-to-talk" false
   Settings.new_full schema
 
-enable :: Settings.Settings -> Effect Env
-enable settings = do
+extension_enable :: Settings.Settings -> Effect Env
+extension_enable settings = do
   log "enable called"
   env <- createEnv
   enableTopMenu env
@@ -115,8 +115,8 @@ enable settings = do
     St.Icon.set_gicon env.icon env.muteIcon
     MumbleDBus.call MumbleDBus.StopTalking
 
-disable :: Env -> Effect Unit
-disable env = do
+extension_disable :: Env -> Effect Unit
+extension_disable env = do
   log "disable called"
   disableTopMenu
   disableShortCut
@@ -126,7 +126,7 @@ disable env = do
   disableShortCut = WM.removeKeybinding "toggle-mumble"
 
 extension :: Extension Settings.Settings Env
-extension = { enable, disable, init }
+extension = { extension_enable, extension_disable, extension_init }
 
 log :: String -> Effect Unit
 log msg = GJS.log $ "gnome-mumble-push-to-talk: " <> msg
