@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist><schema id="org.gnome.shell.extensions.gnome-mumble-push-to-talk" path="/org/gnome/shell/extensions/gnome-mumble-push-to-talk/"><key name="toggle-mumble" type="as"><default><![CDATA[['<Super>F2']]]></default></key></schema></schemalist>
+<schemalist><schema id="org.gnome.shell.extensions.gnome-mumble-push-to-talk" path="/org/gnome/shell/extensions/gnome-mumble-push-to-talk/"><key name="toggle-mumble" type="as"><default><![CDATA[['<Shift>Escape']]]></default></key></schema></schemalist>

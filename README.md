@@ -5,7 +5,7 @@ A gnome extension to enable Mumble push to talk.
 
 # Usage
 
-Push the top menu face icon to talk. Or toggle mute with the `<Super>F2` shortcut.
+Push the top menu face icon to talk. Or toggle mute with the `<Shift>Escape` shortcut.
 
 # Install
 
