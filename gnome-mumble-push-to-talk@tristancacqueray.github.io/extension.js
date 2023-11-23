@@ -235,7 +235,7 @@ var write = function(val) {
 var $$new = _new;
 
 // output/ExtensionUtils/foreign.js
-var getCurrentExtension = () => imports.misc.extensionUtils.getCurrentExtension();
+import * as ExtensionUtils from "resource:///org/gnome/shell/misc/extensionUtils.js";
 var getPath = (ext) => (name) => () => ext.dir.get_child(name).get_path();
 
 // output/GJS/foreign.js
@@ -243,78 +243,70 @@ var argv = ARGV;
 var log = (msg) => () => log(msg);
 
 // output/GLib/foreign.js
-var GLib = imports.gi.GLib;
+import GLib from "gi://GLib";
 var timeoutAdd = (interval) => (cb) => () => GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval, cb);
 var sourceRemove = (source) => () => GLib.source_remove(source);
 
 // output/GLib.DateTime/foreign.js
-var GLib2 = imports.gi.GLib;
+import GLib2 from "gi://GLib";
 var new_now_utc = () => GLib2.DateTime.new_now_utc();
 var difference = (dt) => (begin) => dt.difference(begin);
 
 // output/Gio.Settings/foreign.js
-var Gio = imports.gi.Gio;
+import Gio from "gi://Gio";
 var new_full = (schema) => () => Gio.Settings.new_full(schema, null, null);
 
 // output/Gio.SettingsSchemaSource/foreign.js
-var Gio2 = imports.gi.Gio;
+import Gio2 from "gi://Gio";
 var new_from_directory = (path2) => (trusted) => () => Gio2.SettingsSchemaSource.new_from_directory(path2, null, trusted);
 var lookup = (s) => (name) => (recursive) => () => s.lookup(name, recursive);
 
 // output/Gio.ThemedIcon/foreign.js
-var Gio3 = imports.gi.Gio;
+import Gio3 from "gi://Gio";
 var new_2 = (name) => () => Gio3.ThemedIcon.new(name);
 
 // output/Gio.ThemedIcon/index.js
 var $$new2 = new_2;
 
 // output/Gnome.Shell.ActionMode/foreign.js
-var normal = imports.gi.Shell.ActionMode.NORMAL;
-var overview = imports.gi.Shell.ActionMode.OVERVIEW;
-var lock_screen = imports.gi.Shell.ActionMode.LOCK_SCREEN;
-var all = imports.gi.Shell.ActionMode.ALL;
+import Shell from "gi://Shell";
+var normal = Shell.ActionMode.NORMAL;
+var overview = Shell.ActionMode.OVERVIEW;
+var lock_screen = Shell.ActionMode.LOCK_SCREEN;
+var all = Shell.ActionMode.ALL;
 
 // output/Gnome.UI.Main.Panel/foreign.js
-var Main;
-try {
-  Main = imports.ui.main;
-} catch (_) {
-}
+import * as Main from "resource:///org/gnome/shell/ui/main.js";
 var addToStatusArea = (role) => (indicator) => () => Main.panel.addToStatusArea(role, indicator);
 
 // output/Gnome.UI.Main.WM/foreign.js
-var Main2;
-try {
-  Main2 = imports.ui.main;
-} catch (_) {
-}
+import * as Main2 from "resource:///org/gnome/shell/ui/main.js";
 var addKeybinding = (name) => (settings) => (flags) => (modes) => (handler) => () => Main2.wm.addKeybinding(name, settings, flags, modes, handler);
 var removeKeybinding = (name) => () => Main2.wm.removeKeybinding(name);
 
 // output/Gnome.UI.PanelMenu/foreign.js
-var PanelMenu;
-try {
-  PanelMenu = imports.ui.panelMenu;
-} catch (_) {
-}
+import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 var newButton = (alignment) => (name) => (dontCreateMenu) => () => new PanelMenu.Button(alignment, name, dontCreateMenu);
 
 // output/Meta.KeyBindingFlags/foreign.js
-var none = imports.gi.Meta.KeyBindingFlags.NONE;
-var per_window = imports.gi.Meta.KeyBindingFlags.PER_WINDOW;
-var builtin = imports.gi.Meta.KeyBindingFlags.BUILTIN;
-var ignore_autorepeat = imports.gi.Meta.KeyBindingFlags.IGNORE_AUTOREPEAT;
+import Meta from "gi://Meta";
+var none = Meta.KeyBindingFlags.NONE;
+var per_window = Meta.KeyBindingFlags.PER_WINDOW;
+var builtin = Meta.KeyBindingFlags.BUILTIN;
+var ignore_autorepeat = Meta.KeyBindingFlags.IGNORE_AUTOREPEAT;
 
 // output/GLib.MainLoop/foreign.js
-var GLib3 = imports.gi.GLib;
+import GLib3 from "gi://GLib";
 
 // output/Gio.DBusCallFlags/foreign.js
-var DBusCallFlags = imports.gi.Gio.DBusCallFlags;
+import Gio4 from "gi://Gio";
+var DBusCallFlags = Gio4.DBusCallFlags;
 var none2 = DBusCallFlags.NONE;
 
 // output/Gio.DBusConnection/foreign.js
-var DBus = imports.gi.Gio.DBus;
-var DBusConnection = imports.gi.Gio.DBusConnection;
+import Gio5 from "gi://Gio";
+var DBus = Gio5.DBus;
+var DBusConnection = Gio5.DBusConnection;
 var session = DBus.session;
 var system = DBus.system;
 var call_impl = (conn2) => (bus_name) => (object_path) => (interface_name) => (method_name) => (parameters) => (reply_type) => (flags) => (timeout_msec) => (cancellable) => (cbM) => () => {
@@ -398,11 +390,7 @@ var call2 = function(method) {
 };
 
 // output/St/foreign.js
-var St;
-try {
-  St = imports.gi.St;
-} catch (_) {
-}
+import St from "gi://St";
 var unsafe_add_style_class_name = (widget) => (name) => () => widget.add_style_class_name(name);
 
 // output/St/index.js
@@ -411,11 +399,7 @@ var add_style_class_name = function() {
 };
 
 // output/St.Icon/foreign.js
-var St2;
-try {
-  St2 = imports.gi.St;
-} catch (_) {
-}
+import St2 from "gi://St";
 var new_4 = () => St2.Icon.new();
 var set_gicon = (icon) => (gicon) => () => icon.set_gicon(gicon);
 
@@ -434,23 +418,24 @@ var log2 = function(msg) {
   return log("gnome-mumble-push-to-talk: " + msg);
 };
 var main = /* @__PURE__ */ log2("Welcome!");
-var extension_init = function __do() {
-  var me = getCurrentExtension();
-  var path2 = getPath(me)("schemas")();
-  var schemaSource = new_from_directory(path2)(false)();
-  var schema = lookup(schemaSource)("org.gnome.shell.extensions.gnome-mumble-push-to-talk")(false)();
-  return new_full(schema)();
+var extension_init = function(me) {
+  return function __do() {
+    var path2 = getPath(me)("schemas")();
+    var schemaSource = new_from_directory(path2)(false)();
+    var schema = lookup(schemaSource)("org.gnome.shell.extensions.gnome-mumble-push-to-talk")(false)();
+    return new_full(schema)();
+  };
 };
 var extension_enable = function(settings) {
   var onTalkStart = function(env) {
-    return function __do2() {
+    return function __do() {
       log2("Start talking...")();
       set_gicon(env.icon)(env.talkIcon)();
       return call2(StartTalking.value)();
     };
   };
   var onTalkEnd = function(env) {
-    return function __do2() {
+    return function __do() {
       log2("Stop talking...")();
       set_gicon(env.icon)(env.muteIcon)();
       return call2(StopTalking.value)();
@@ -458,24 +443,24 @@ var extension_enable = function(settings) {
   };
   var onKeyBinding = function(env) {
     return function(timerRef) {
-      var releasePushToTalk = function __do2() {
+      var releasePushToTalk = function __do() {
         onTalkEnd(env)();
         write(Nothing.value)(timerRef)();
         return false;
       };
       var startCanceller = function(now) {
-        return function __do2() {
+        return function __do() {
           var timer = timeoutAdd(500)(releasePushToTalk)();
           return write(new Just(new Tuple(now, timer)))(timerRef)();
         };
       };
-      return function __do2() {
+      return function __do() {
         var timerM = read(timerRef)();
         (function() {
           if (timerM instanceof Just) {
             var now = new_now_utc();
             var v = difference(now)(timerM.value0.value0);
-            return when2(v >= 4e5)(function __do3() {
+            return when2(v >= 4e5)(function __do2() {
               sourceRemove(timerM.value0.value1)();
               return startCanceller(now)();
             })();
@@ -497,7 +482,7 @@ var extension_enable = function(settings) {
     return function(env) {
       return function(v) {
         return function(v1) {
-          return function __do2() {
+          return function __do() {
             cb(env)();
             return true;
           };
@@ -506,7 +491,7 @@ var extension_enable = function(settings) {
     };
   };
   var enableTopMenu = function(env) {
-    return function __do2() {
+    return function __do() {
       add_child2(env.button)(env.icon)();
       addToStatusArea("mumble")(env.button)();
       $$void2(onButtonPressEvent2(env.button)(onClick(onTalkStart)(env)))();
@@ -514,12 +499,12 @@ var extension_enable = function(settings) {
     };
   };
   var enableShortCut = function(env) {
-    return function __do2() {
+    return function __do() {
       var timerRef = $$new(Nothing.value)();
       return $$void2(addKeybinding("toggle-mumble")(settings)(none)(all)(onKeyBinding(env)(timerRef)))();
     };
   };
-  var createEnv = function __do2() {
+  var createEnv = function __do() {
     var button = newButton(0)("Mumble")(false)();
     var muteIcon = $$new2("face-shutmouth-symbolic")();
     var talkIcon = $$new2("face-smile-big-symbolic")();
@@ -533,7 +518,7 @@ var extension_enable = function(settings) {
       talkIcon
     };
   };
-  return function __do2() {
+  return function __do() {
     log2("enable called")();
     var env = createEnv();
     enableTopMenu(env)();
@@ -544,7 +529,7 @@ var extension_enable = function(settings) {
 var extension_disable = function(env) {
   var disableTopMenu = destroy2(env.button);
   var disableShortCut = removeKeybinding("toggle-mumble");
-  return function __do2() {
+  return function __do() {
     log2("disable called")();
     disableTopMenu();
     return disableShortCut();
@@ -558,7 +543,13 @@ var extension = {
 
 // necessary footer to transform a spago build into a valid gnome extension
 let GnomeMumblePushToTalkEnv = null;
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 let GnomeMumblePushToTalkSettings = null;
-function init() { GnomeMumblePushToTalkSettings = extension.extension_init(); }
-function enable() { GnomeMumblePushToTalkEnv = extension.extension_enable(GnomeMumblePushToTalkSettings)(); }
-function disable() { extension.extension_disable(GnomeMumblePushToTalkEnv)(); }
+export default class GnomeMumblePushToTalk extends Extension {
+  constructor(metadata) {
+    super(metadata);
+    GnomeMumblePushToTalkSettings = extension.extension_init(metadata)();
+  }
+  enable() { GnomeMumblePushToTalkEnv = extension.extension_enable(GnomeMumblePushToTalkSettings)(); }
+  disable() { extension.extension_disable(GnomeMumblePushToTalkEnv)(); }
+}

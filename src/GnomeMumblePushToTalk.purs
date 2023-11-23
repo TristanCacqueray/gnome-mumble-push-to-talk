@@ -16,6 +16,7 @@ import Gio.Icon (Icon)
 import Gio.Settings as Settings
 import Gio.SettingsSchemaSource as SettingsSchemaSource
 import Gio.ThemedIcon as ThemedIcon
+import ExtensionUtils (ExtensionMetadata)
 import Gnome.Extension (Extension)
 import Gnome.Shell.ActionMode as ActionMode
 import Gnome.UI.Main.Panel as Panel
@@ -33,9 +34,8 @@ type Env
     , talkIcon :: Icon
     }
 
-extension_init :: Effect Settings.Settings
-extension_init = do
-  me <- ExtensionUtils.getCurrentExtension
+extension_init :: ExtensionMetadata -> Effect Settings.Settings
+extension_init me = do
   path <- ExtensionUtils.getPath me "schemas"
   schemaSource <- SettingsSchemaSource.new_from_directory path false
   schema <- SettingsSchemaSource.lookup schemaSource "org.gnome.shell.extensions.gnome-mumble-push-to-talk" false
