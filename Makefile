@@ -20,10 +20,7 @@ dist-schemas:
 
 .PHONY: dist-extension
 dist-extension:
-	# spago needs a patch to pass the external arg to esbuild, for now just ignore the failure and finish the build manually
-	env PGS=$(PGS) spago bundle-module -m $(MAIN) --to $(NAME)/extension.js || true
-	esbuild --platform=browser --format=esm --bundle --outfile=$(NAME)/extension.js output/$(MAIN)/index.js "--external:gi://*"  "--external:resource://*"
-	sed -e '/^export {/,/^};/d' -i $(NAME)/extension.js
+	env PGS=$(PGS) spago bundle --module $(MAIN) --outfile $(NAME)/extension.js
 	echo "($(PGS)).boot ./extension.dhall" | env PGS=$(PGS) dhall text >> $(NAME)/extension.js
 
 .PHONY: install
@@ -35,6 +32,6 @@ install:
 test:
 	dbus-run-session -- gnome-shell --nested --wayland
 
-.PHONE: update
+.PHONY: update
 update:
 	echo "($(PGS)).render ./extension.dhall" | env PGS=$(PGS) dhall to-directory-tree --output .
