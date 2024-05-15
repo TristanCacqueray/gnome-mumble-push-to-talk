@@ -2,12 +2,8 @@
   "description": "A gnome extension to enable Mumble push to talk.",
   "name": "gnome-mumble-push-to-talk",
   "shell-version": [
-    "40.0",
-    "41",
-    "42",
-    "43",
-    "44",
-    "45"
+    "45",
+    "46"
   ],
   "url": "https://github.com/TristanCacqueray/gnome-mumble-push-to-talk",
   "uuid": "gnome-mumble-push-to-talk@tristancacqueray.github.io",

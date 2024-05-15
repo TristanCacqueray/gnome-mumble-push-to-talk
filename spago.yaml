@@ -1,0 +1,23 @@
+package:
+  name: gnome-mumble-push-to-talk
+  dependencies:
+  - effect
+  - gjs
+  - gnome-shell
+  - maybe
+  - prelude
+  - refs
+  - tuples
+  bundle:
+    type: module
+    extra_args:
+      - "--external:gi://*"
+      - "--external:resource://*"
+workspace:
+  package_set:
+    registry: 48.0.0
+  extra_packages:
+    gjs:
+      path: ../../purescript-gjs/purescript-gjs
+    gnome-shell:
+      path: ../../purescript-gjs/purescript-gnome-shell
