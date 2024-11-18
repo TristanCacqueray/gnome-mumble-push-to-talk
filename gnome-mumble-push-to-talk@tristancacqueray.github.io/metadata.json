@@ -3,7 +3,9 @@
   "name": "gnome-mumble-push-to-talk",
   "shell-version": [
     "45",
-    "46"
+    "46",
+    "47",
+    "48"
   ],
   "url": "https://github.com/TristanCacqueray/gnome-mumble-push-to-talk",
   "uuid": "gnome-mumble-push-to-talk@tristancacqueray.github.io",
